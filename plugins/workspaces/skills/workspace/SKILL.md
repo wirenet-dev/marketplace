@@ -72,16 +72,20 @@ asks for a specific workspace operation:
    - domain-specific source folders,
    - output folders that match actual outputs,
    - only real review checklists in `reviews/`.
-4. Keep source-of-truth rules explicit, especially for generated files,
+4. Create one root `README.md` by default. Add folder-level READMEs only for a
+   human-facing handoff surface, an intentionally empty placeholder, or local
+   rules that would otherwise be unclear. Keep them to a title plus one or two
+   sentences.
+5. Keep source-of-truth rules explicit, especially for generated files,
    structured state, approvals, and `.docs`/`.code`/`.drive` boundaries.
-5. When a `.code` facet exists, prefer small, named CLI tools for recurring
+6. When a `.code` facet exists, prefer small, named CLI tools for recurring
    workflow steps that benefit from deterministic execution, such as parsing,
    validation, rendering, compilation, state updates, scraping, API calls, or
    report generation. Document these commands in `AGENTS.md` and reference them
    from `playbooks/workflows/`.
-6. When a `.drive` facet exists, use it for shareable Docs, Slides, Sheets,
+7. When a `.drive` facet exists, use it for shareable Docs, Slides, Sheets,
    PDFs, exports, and handoff artifacts. Keep durable steering in `.docs`.
-7. Do not delete or overwrite existing user material without explicit approval.
+8. Do not delete or overwrite existing user material without explicit approval.
 
 ## Audit Workflow
 

@@ -1,6 +1,6 @@
 {
   "name": "workspaces",
-  "version": "0.1.0+codex.20260608073052",
+  "version": "0.1.0+codex.20260608142329",
   "description": "Set up, audit, lint, extend, and operate WireNet-style knowledge-work workspaces.",
   "author": {
     "name": "wirenet"

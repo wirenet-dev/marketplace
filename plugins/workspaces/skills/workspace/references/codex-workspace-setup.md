@@ -113,6 +113,11 @@ The README is for humans. It should explain, briefly:
 Do not make the README a long agent manual. Put operational instructions,
 paired-repo details, commands, and hard agent boundaries in `AGENTS.md`.
 
+Folder-level READMEs are optional signposts, not default scaffolding. Add them
+only when a folder is a human-facing handoff surface, an intentionally empty
+placeholder, or has local rules that would otherwise be unclear. Keep them to a
+title plus one or two sentences, and do not repeat the root README.
+
 ### AGENTS.md
 
 `AGENTS.md` is the agent entry point. It should be short and explicit:
@@ -415,6 +420,8 @@ concrete: it can be checked, passed, or failed.
 - Keep overviews as views, not duplicate databases.
 - Keep reviews aligned with actual risks.
 - Delete empty scaffolding when it stops helping.
+- Create one root `README.md` by default; add folder-level READMEs only when
+  they clarify a real handoff surface, placeholder, or local rule.
 - Prefer one compact steering file over many small files when a human needs to
   scan and edit the information.
 - Prefer structured state only when automation benefits from it.
