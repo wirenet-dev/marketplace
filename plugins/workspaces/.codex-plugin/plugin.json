@@ -1,0 +1,25 @@
+{
+  "name": "workspaces",
+  "version": "0.1.0+codex.20260608073052",
+  "description": "Set up, audit, lint, extend, and operate WireNet-style knowledge-work workspaces.",
+  "author": {
+    "name": "wirenet"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Workspaces",
+    "shortDescription": "Set up, audit, lint, and extend Codex workspaces.",
+    "longDescription": "The Workspaces plugin provides modular Codex skills and deterministic helpers for setting up, auditing, linting, extending, and operating knowledge-work workspaces around identity, playbooks, sources, outputs, and reviews.",
+    "developerName": "wirenet",
+    "category": "Productivity",
+    "capabilities": [
+      "Write",
+      "Review"
+    ],
+    "defaultPrompt": [
+      "Use the workspace skill to set up this folder.",
+      "Audit this workspace with the workspace skill.",
+      "Lint this workspace and explain the findings."
+    ]
+  }
+}

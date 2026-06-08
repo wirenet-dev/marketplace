@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Method"
+  short_description: "Create reusable workspace methods"
+  default_prompt: "Use $workspace-method to document a reusable method."
+
+policy:
+  allow_implicit_invocation: true
+

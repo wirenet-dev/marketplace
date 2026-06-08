@@ -1,0 +1,20 @@
+{
+  "name": "wirenet",
+  "interface": {
+    "displayName": "WireNet"
+  },
+  "plugins": [
+    {
+      "name": "workspaces",
+      "source": {
+        "source": "local",
+        "path": "./plugins/workspaces"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

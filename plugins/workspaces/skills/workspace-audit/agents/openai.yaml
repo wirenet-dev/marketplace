@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Audit"
+  short_description: "Audit workspace structure and guardrails"
+  default_prompt: "Use $workspace-audit to inspect this workspace and recommend fixes."
+
+policy:
+  allow_implicit_invocation: true
+

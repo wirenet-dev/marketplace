@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Review"
+  short_description: "Create workspace review checklists"
+  default_prompt: "Use $workspace-review to create a review checklist."
+
+policy:
+  allow_implicit_invocation: true
+

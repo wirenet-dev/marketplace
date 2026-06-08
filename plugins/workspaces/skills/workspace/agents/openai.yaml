@@ -1,0 +1,7 @@
+interface:
+  display_name: "Workspace"
+  short_description: "Set up or audit Codex knowledge-work spaces"
+  default_prompt: "Use $workspace to set up this folder as a Codex workspace for a recurring knowledge-work process."
+
+policy:
+  allow_implicit_invocation: true

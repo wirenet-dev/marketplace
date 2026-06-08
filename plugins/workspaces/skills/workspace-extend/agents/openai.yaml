@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Extend"
+  short_description: "Add coherent modules to workspaces"
+  default_prompt: "Use $workspace-extend to add a new workspace area."
+
+policy:
+  allow_implicit_invocation: true
+

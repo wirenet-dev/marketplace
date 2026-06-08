@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Bootstrap"
+  short_description: "Set up WireNet-style knowledge workspaces"
+  default_prompt: "Use $workspace-bootstrap to set up this folder as a knowledge-work workspace."
+
+policy:
+  allow_implicit_invocation: true
+

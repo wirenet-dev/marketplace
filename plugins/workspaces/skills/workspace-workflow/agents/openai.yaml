@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Workflow"
+  short_description: "Create repeatable workspace workflows"
+  default_prompt: "Use $workspace-workflow to create a workflow playbook."
+
+policy:
+  allow_implicit_invocation: true
+
