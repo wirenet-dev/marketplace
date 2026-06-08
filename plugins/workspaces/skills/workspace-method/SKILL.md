@@ -27,4 +27,3 @@ A method should define:
 
 Do not create a method for a one-off instruction. Put one-off steps inside the
 workflow that uses them.
-

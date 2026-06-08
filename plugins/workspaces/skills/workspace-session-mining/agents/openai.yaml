@@ -1,0 +1,8 @@
+interface:
+  display_name: "Workspace Session Mining"
+  short_description: "Mine recent sessions for workspace memory"
+  default_prompt: "Use $workspace-session-mining to mine my last 10 sessions for recurring workspace preferences and rule updates."
+
+policy:
+  allow_implicit_invocation: true
+

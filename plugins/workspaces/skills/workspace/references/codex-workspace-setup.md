@@ -22,8 +22,8 @@ and separates five things:
 
 The Every article keeps the default `.docs` structure intentionally small:
 context files, repeatable playbooks, source shelves, outputs, and review
-checklists. Extra folders are useful only when they make recurring work easier
-to run.
+checklists. WireNet adds optional root-level `inbox/` and `overviews/`
+extensions only when they make recurring work easier to run.
 
 ## Project Facets
 
@@ -59,10 +59,13 @@ compilation, state updates, scraping, API calls, and report generation.
 project.docs/
   README.md
   AGENTS.md
+  inbox/
   identity/
     context.md
     preferences.md
     rules.md
+  overviews/
+    <scan-view>.base
   playbooks/
     workflows/
       <workflow>.md
@@ -70,13 +73,13 @@ project.docs/
   sources/
     key-links.md
     recurring-docs.md
-    sources/
+    _sources/
     <domain-source>/
   outputs/
+    _outputs/
     drafts/
     reports/
     <output-type>/
-    outputs/
   reviews/
     <review-checklist>.md
 
@@ -93,9 +96,11 @@ project.drive/
   exports/
 ```
 
-Use domain-specific names wherever possible. Keep generic
-`sources/sources/` and `outputs/outputs/` shelves only as temporary homes for
-material that has not earned a clearer category yet.
+Use domain-specific names wherever possible. Use root-level `inbox/` for loose
+human notes and untriaged mixed material. Use `sources/_sources/` as the default
+home for new source material when the user has not named a destination. Use
+`outputs/_outputs/` as the default home for produced artifacts that do not fit a
+specific output shelf.
 
 ## Folder Roles
 
@@ -104,19 +109,20 @@ material that has not earned a clearer category yet.
 The README is for humans. It should explain, briefly:
 
 - what the workspace is for,
-- what each top-level folder contains,
-- what workflows exist,
-- what sources are used,
-- what outputs are produced,
-- how reviews function as the quality-check layer.
+- the local areas, workflows, sources, outputs, and reviews that matter for this
+  workspace,
+- where a human should start reading,
+- open decisions or current operating notes.
 
-Do not make the README a long agent manual. Put operational instructions,
-paired-repo details, commands, and hard agent boundaries in `AGENTS.md`.
+Do not make the README a generic explanation of the Workspaces model. The
+plugin already defines folder roles, workflow templates, method templates, and
+review shapes. The README should add local meaning, not repeat plugin doctrine.
+Put operational instructions, paired-repo details, commands, and hard agent
+boundaries in `AGENTS.md`.
 
-Folder-level READMEs are optional signposts, not default scaffolding. Add them
-only when a folder is a human-facing handoff surface, an intentionally empty
-placeholder, or has local rules that would otherwise be unclear. Keep them to a
-title plus one or two sentences, and do not repeat the root README.
+Do not create folder-level READMEs. If the information matters to a human, keep
+it in the root `README.md`. If it matters only to agents, keep it in
+`AGENTS.md`. Folder READMEs are too easy to scatter and forget.
 
 ### AGENTS.md
 
@@ -124,14 +130,44 @@ title plus one or two sentences, and do not repeat the root README.
 
 - startup read order,
 - docs/code/drive split if the project uses multiple facets,
+- paired facet paths and source-of-truth boundaries,
+- read/write boundary: the agent may read across the system for relevant
+  context, but may write or edit only inside the workspace unless the user
+  explicitly says otherwise; in faceted projects, state whether paired facets
+  are writable for the current workflow,
 - source-of-truth rules,
 - commands to run,
 - CLI tools available for workflow steps,
 - approval boundaries,
 - things the agent must never do.
 
+Do not paste generic Workspaces plugin instructions into `AGENTS.md`. The plugin
+already knows the core folder model, workflow fields, method shape, review
+shape, and Markdown style conventions. `AGENTS.md` should contain only the local
+operating contract: project-specific read order, boundaries, commands, facets,
+source-of-truth rules, approvals, and exceptions.
+
 If humans do not need to read a detail during normal use, it probably belongs
 in `AGENTS.md`, not the README.
+
+### inbox/ (Optional)
+
+`inbox/` is the one sanctioned junk drawer for mixed, untriaged material:
+scratch notes, copied snippets, prompt ideas, rough links, and half-formed
+thoughts that do not yet belong anywhere else.
+
+Rules for `inbox/`:
+
+- Use it only when the workspace needs a catch-all.
+- Treat it as temporary, not a source of truth.
+- Keep it root-level so the mess is visible and easy to sweep.
+- Move reusable prompts to `playbooks/prompts/`.
+- Move reusable methods or procedures to `playbooks/methods/` or
+  `playbooks/workflows/`.
+- Move remembered ideas, notes, links, and evidence to named `sources/` files or
+  folders.
+- Move material becoming deliverable work to `outputs/drafts/` or another named
+  output folder.
 
 ### identity/
 
@@ -146,19 +182,24 @@ Use these files by default:
 - `rules.md`: hard boundaries, approval rules, allowed actions, forbidden actions.
 
 Keep workflow instructions out of `identity/`. If a file says how to perform a
-recurring process, it belongs in `playbooks/`.
+recurring process, it belongs in `playbooks/`. Facet boundaries, sibling paths,
+commands, and source-of-truth rules belong in `AGENTS.md` so the human
+interface stays clean.
 
-#### Optional Overview Tables
+### overviews/ (Optional)
 
-Overview tables are a local extension, not part of the Every article's minimal
-structure. Use them only when Obsidian Bases or similar lightweight tables make
-the existing workspace easier to scan.
+`overviews/` is an optional root-level folder for Obsidian Bases or similar
+scan views. It is a local extension, not part of the Every article's minimal
+structure. Use it only when the existing workspace has enough files to make a
+view useful.
 
 Rules for overviews:
 
 - An overview is a view, not a source of truth.
+- Keep overview files in root-level `overviews/`.
 - Add only enough frontmatter to the underlying notes to make useful rows.
 - Do not duplicate full source content inside the overview.
+- Do not create overviews for docs/code/drive facet maps or agent routing.
 - If an overview reveals a mismatch, fix the underlying source or output file.
 
 Good overview candidates:
@@ -177,32 +218,38 @@ Sources are not only raw inputs; they can include evidence, templates, reference
 notes, canonical PDFs, datasets, saved links, transcripts, and steering
 documents.
 
-Use named subfolders for durable source categories:
+Keep `sources/` mostly flat:
 
 ```text
 sources/
   key-links.md
   recurring-docs.md
-  evidence/
-  templates/
-  watchlist/
-  reference/
-  sources/
+  topic-map.md
+  _sources/
+  durable-category/
 ```
 
 Use `sources/key-links.md` for recurring links the agent should know about by
 default: newsletters, databases, dashboards, key authors, source directories,
-reference docs, or other stable web surfaces. Keep it compact and curated.
+reference docs, watchlists, or other stable web surfaces. Keep it compact and
+curated.
 
-Use `sources/recurring-docs.md` to list what the agent should read before common
-artifact types or workflows.
+Use `sources/recurring-docs.md` to list recurring local inputs and what the
+agent should read before common artifact types or workflows.
 
-For human-steered automation, keep a compact Markdown steering layer here. If
-the automation needs structured data, compile that Markdown into YAML or JSON
-in the code repo. The structured file adds value when it enables validation,
-deduplication, deterministic parsing, or repeatable automation. If humans are
-the only readers and no automation depends on it, Markdown alone is usually
-enough.
+Use flat `sources/*.md` files for lightweight topic maps and compact steering
+notes. Create named source folders such as `evidence/`, `templates/`, or
+`reference/` only when a durable source category has enough material to deserve
+a shelf. Avoid generic folders such as `topics/`, `steering/`, and
+`watchlist/` unless the workspace has made a deliberate local convention for
+them.
+
+For human-steered automation, keep a compact Markdown steering layer in
+`sources/`. If the automation needs structured data, compile that Markdown into
+YAML or JSON in the code repo. The structured file adds value when it enables
+validation, deduplication, deterministic parsing, or repeatable automation. If
+humans are the only readers and no automation depends on it, Markdown alone is
+usually enough.
 
 ### playbooks/
 
@@ -220,6 +267,10 @@ steps, outputs, and review step. Examples:
 
 Simple workspaces may also keep short playbooks directly under `playbooks/`,
 such as `inbox-sweep.md` or `research-brief.md`.
+
+Use `playbooks/prompts/` for reusable prompt templates the user wants to invoke
+again. If a prompt describes a full recurring process, turn it into a workflow.
+If it describes one reusable move, turn it into a method.
 
 As a local extension, use `playbooks/methods/` for reusable methods that can
 appear inside multiple workflows. Examples:
@@ -259,7 +310,6 @@ outputs/
   sent/
   reports/
   digests/
-  outputs/
 ```
 
 Do not mix machine-only state into outputs. If a file exists only so automation
@@ -319,6 +369,11 @@ validator, keep it in `.code`. If something is a Google Docs-ready document,
 Slides deck, Sheets workbook, PDF export, or handoff artifact, keep it in
 `.drive`.
 
+Use top-level `tmp/` only for disposable generated scratch work, preferably in a
+`.code` facet. It is not a source of truth. The workspace linter may remove an
+empty `tmp/` during cleanup, but non-empty scratch folders should be reviewed
+before deletion.
+
 When useful, expose code-repo behavior through named CLI commands rather than
 requiring the agent to reconstruct one-off shell procedures. Good CLI tools are
 small, composable, documented, and testable. They should accept clear inputs,
@@ -334,8 +389,6 @@ execution points as well as human-readable instructions.
 Use this shape for each file in `playbooks/workflows/`:
 
 ```markdown
-# Workflow Name
-
 Purpose:
 
 Trigger or cadence:
@@ -365,6 +418,9 @@ Where the final output lives:
 When to retire or revise this workflow:
 ```
 
+The file does not need a title heading that repeats its filename. In Obsidian,
+the filename already carries the document title.
+
 Every workflow should answer:
 
 - What starts this?
@@ -380,8 +436,6 @@ Every workflow should answer:
 Use this shape for each file in `reviews/`:
 
 ```markdown
-# Review Name
-
 Use this before:
 
 - check one
@@ -390,38 +444,66 @@ Use this before:
 - command or validation step, if any
 ```
 
+The file does not need a title heading that repeats its filename. In Obsidian,
+the filename already carries the document title.
+
 Write review checklists as failure detectors, not advice. A good item is
 concrete: it can be checked, passed, or failed.
 
 ## Setup Procedure
 
 1. Create the top-level folders.
-2. Write the README for a human reader.
-3. Write `AGENTS.md` with read order, boundaries, and commands.
-4. Fill `identity/context.md`, `identity/preferences.md`, and `identity/rules.md`.
-5. Add the first real source folders, not a maze of empty scaffolding.
-6. Create only the workflows that already exist or are about to be used.
-7. Add one review checklist per real handoff point.
-8. Add overview tables only after there are files worth tabulating.
-9. Add a `.code` facet only when automation or validation needs it.
-10. Add a `.drive` facet only when Google Drive sharing or external handoff
+2. Write the README for a human reader, using local meaning instead of generic
+   folder-role explanations.
+3. Write `AGENTS.md` with read order, boundaries, commands, and the default
+   read/write boundary. Do not copy plugin templates or generic workspace
+   doctrine into it.
+4. Add optional root-level `inbox/` only when the workspace needs a single
+   catch-all for untriaged mixed material.
+5. Fill `identity/context.md`, `identity/preferences.md`, and `identity/rules.md`.
+6. Add the first real source folders, not a maze of empty scaffolding.
+7. Create only the workflows that already exist or are about to be used.
+8. Add one review checklist per real handoff point.
+9. Add optional root-level `overviews/` only after there are files worth
+   tabulating.
+10. Add a `.code` facet only when automation or validation needs it.
+11. Add a `.drive` facet only when Google Drive sharing or external handoff
     needs it.
-11. Run one real workflow manually and update the workspace based on what broke.
+12. Run one real workflow manually and update the workspace based on what broke.
 
 ## Maintenance Rules
 
 - Keep the README short and current.
 - Keep `AGENTS.md` operational and explicit.
+- Keep README and `AGENTS.md` local; do not restate plugin-provided folder
+  roles, workflow templates, method templates, or review templates.
 - Keep `identity/` stable; do not bury workflow steps there.
+- Keep facet boundaries and read/write boundaries in `AGENTS.md`.
+- Keep `inbox/` as the only catch-all. Sweep it into prompts, playbooks,
+  sources, or outputs when items become useful.
+- Keep Obsidian Bases and scan views in root-level `overviews/`.
+- Keep root-level folders limited to `inbox/`, `identity/`, `overviews/`,
+  `playbooks/`, `sources/`, `outputs/`, `reviews/`, and disposable `tmp/`.
+  Triage unknown root folders into the model or make an explicit convention
+  before keeping them.
 - Keep `playbooks/` practical; workflows, methods, and agent personas should be
   easy to scan and run.
-- Keep source folders human-readable.
+- Keep source files and folders human-readable.
 - Keep outputs as records, not scratch space.
 - Keep overviews as views, not duplicate databases.
 - Keep reviews aligned with actual risks.
 - Delete empty scaffolding when it stops helping.
-- Create one root `README.md` by default; add folder-level READMEs only when
-  they clarify a real handoff surface, placeholder, or local rule.
+- Create one root `README.md` by default. Do not create folder-level READMEs;
+  move human-facing details to the root README and agent-only details to
+  `AGENTS.md`.
+- Let Markdown filenames carry document titles in Obsidian; start content with
+  the first useful section.
+- When recent sessions contain repeated corrections or restructuring commands,
+  mine them into proposed updates for `identity/preferences.md`,
+  `identity/rules.md`, `AGENTS.md`, playbooks, or reviews. Apply only after
+  user approval.
+- Treat top-level `tmp/` as disposable scratch. Remove it when empty; review
+  contents before deleting non-empty scratch artifacts.
 - Prefer one compact steering file over many small files when a human needs to
   scan and edit the information.
 - Prefer structured state only when automation benefits from it.
@@ -440,8 +522,11 @@ Use this structure:
 
 First inspect any existing files. Then propose the smallest useful structure,
 avoiding empty scaffolding. Create README.md for humans and AGENTS.md for
-agents. Make the source-of-truth rules explicit, including what requires my
-approval.
+agents. Do not repeat generic plugin conventions or templates in those files;
+include only the local purpose, read order, boundaries, commands, source of
+truth, approvals, and exceptions. The agent may read across the system for
+context, but may write or edit only inside this workspace unless I explicitly
+say otherwise.
 ```
 
 ## Definition Of Done
@@ -449,7 +534,9 @@ approval.
 A workspace is ready when:
 
 - a human can open `README.md` and understand the system in one minute,
-- an agent can open `AGENTS.md` and know where to read, write, and stop,
+- an agent can open `AGENTS.md` and know where to read, where it may write, and
+  where it must stop,
+- README and `AGENTS.md` add local context instead of restating plugin doctrine,
 - every top-level folder has a distinct purpose,
 - sources, outputs, and machine state are not mixed together,
 - workflows have review steps,

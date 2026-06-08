@@ -1,7 +1,7 @@
 {
   "name": "workspaces",
-  "version": "0.1.0+codex.20260608142329",
-  "description": "Set up, audit, lint, extend, and operate WireNet-style knowledge-work workspaces.",
+  "version": "0.1.0+codex.20260608151144",
+  "description": "Set up, audit, lint, extend, mine, and operate WireNet-style knowledge-work workspaces.",
   "author": {
     "name": "wirenet"
   },
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "Workspaces",
     "shortDescription": "Set up, audit, lint, and extend Codex workspaces.",
-    "longDescription": "The Workspaces plugin provides modular Codex skills and deterministic helpers for setting up, auditing, linting, extending, and operating knowledge-work workspaces around identity, playbooks, sources, outputs, and reviews.",
+    "longDescription": "The Workspaces plugin provides modular Codex skills and deterministic helpers for setting up, auditing, linting, extending, mining recent sessions, and operating knowledge-work workspaces around identity, playbooks, sources, outputs, and reviews.",
     "developerName": "wirenet",
     "category": "Productivity",
     "capabilities": [
@@ -19,7 +19,8 @@
     "defaultPrompt": [
       "Use the workspace skill to set up this folder.",
       "Audit this workspace with the workspace skill.",
-      "Lint this workspace and explain the findings."
+      "Lint this workspace and explain the findings.",
+      "Mine my recent sessions for recurring workspace preferences and rules."
     ]
   }
 }

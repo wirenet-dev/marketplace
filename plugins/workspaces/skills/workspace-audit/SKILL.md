@@ -15,10 +15,23 @@ Read `../workspace/references/codex-workspace-setup.md` for the canonical model.
 Check:
 
 - `README.md` is human-facing and concise.
-- `AGENTS.md` gives read order, boundaries, paired repo details, and commands.
+- `AGENTS.md` gives read order, boundaries, paired repo details, and commands,
+  including the default rule that the agent may read across the system but may
+  write or edit only inside the workspace unless the user explicitly says
+  otherwise.
+- README and `AGENTS.md` add local context instead of restating plugin-provided
+  folder roles, workflow templates, method templates, review templates, or
+  generic workspace doctrine.
+- `inbox/`, if present, is the single temporary catch-all and not a source of
+  truth.
 - `identity/` contains context, preferences, and rules.
+- `overviews/`, if present, is root-level and contains scan views, not source
+  of truth or agent routing.
 - `playbooks/` contains process, not source material or finished work.
 - `sources/` contains inputs and evidence.
+- `sources/` stays mostly flat: recurring links live in `key-links.md`,
+  recurring local inputs live in `recurring-docs.md`, and generic folders such
+  as `topics/`, `steering/`, or `watchlist/` are avoided unless deliberate.
 - `outputs/` contains records, drafts, reports, or finished artifacts.
 - `reviews/` contains concrete checklist-style guardrails.
 - `.docs` is Obsidian-compatible and holds durable workspace context.

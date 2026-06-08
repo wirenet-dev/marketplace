@@ -1,5 +1,3 @@
 # Faceted Project Docs Fixture
 
-This fixture represents the `.docs` facet of a project with `.code` and
-`.drive` siblings.
-
+Use this fixture for a minimal human-facing docs workspace.

@@ -28,4 +28,3 @@ Define:
 Do not create personas that merely rename the general agent. Use them when a
 workflow benefits from a narrower stance such as evidence checker, company
 researcher, draft reviewer, or inbox triage agent.
-

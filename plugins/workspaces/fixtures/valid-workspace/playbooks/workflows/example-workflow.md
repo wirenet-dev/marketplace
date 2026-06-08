@@ -1,5 +1,3 @@
-# Example Workflow
-
 Purpose:
 
 Demonstrate the workflow canvas.
@@ -57,4 +55,3 @@ Where the final output lives:
 When to retire or revise this workflow:
 
 Revise when the fixture model changes.
-

@@ -32,4 +32,3 @@ Every workflow should define:
 
 After writing the workflow, check that referenced sources, reviews, outputs, and
 CLI tools exist or are clearly marked as future decisions.
-

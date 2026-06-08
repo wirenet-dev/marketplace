@@ -3,8 +3,6 @@
 Use this shape for files in `reviews/`.
 
 ```markdown
-# Review Name
-
 Use this before:
 
 - check one
@@ -12,6 +10,9 @@ Use this before:
 - check three
 - command or validation step, if any
 ```
+
+The file does not need a title heading that repeats its filename. In Obsidian,
+the filename already carries the document title.
 
 Review checklists are failure detectors, not advice. A good checklist item can
 be checked, passed, or failed.
@@ -25,4 +26,3 @@ Common review checklist families:
 - external sharing
 - generated artifact quality
 - workflow retirement or revision
-

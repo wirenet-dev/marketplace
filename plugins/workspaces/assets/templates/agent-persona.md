@@ -1,5 +1,3 @@
-# Agent Persona
-
 Use this persona when:
 
 Responsibilities:
@@ -11,4 +9,3 @@ Working style:
 Boundaries:
 
 Output style:
-

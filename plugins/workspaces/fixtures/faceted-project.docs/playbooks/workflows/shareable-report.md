@@ -1,5 +1,3 @@
-# Shareable Report
-
 Purpose:
 
 Produce a report that can be shared as a document export.
@@ -58,4 +56,3 @@ Where the final output lives:
 When to retire or revise this workflow:
 
 Revise when the facet model changes.
-

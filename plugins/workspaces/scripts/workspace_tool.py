@@ -12,6 +12,9 @@ from pathlib import Path
 
 REQUIRED_DIRS = ["identity", "playbooks", "sources", "outputs", "reviews"]
 REQUIRED_IDENTITY_FILES = ["context.md", "preferences.md", "rules.md"]
+TMP_DIR_NAME = "tmp"
+INBOX_DIR_NAME = "inbox"
+OVERVIEWS_DIR_NAME = "overviews"
 LEGACY_DIRS = {
     "depeche": "identity",
     "vademecum": "playbooks",
@@ -34,6 +37,26 @@ WORKFLOW_FIELDS = [
     "Where the final output lives:",
     "When to retire or revise this workflow:",
 ]
+GENERIC_SHELVES = [
+    ("sources/sources", "sources/_sources"),
+    ("outputs/outputs", "outputs/_outputs"),
+]
+LOW_VALUE_SOURCE_FOLDERS = [
+    (
+        "sources/topics",
+        "topic maps usually belong as flat sources/*.md files unless the folder has enough durable material",
+    ),
+    (
+        "sources/steering",
+        "source steering usually belongs in a compact sources/*.md file unless the folder has enough durable material",
+    ),
+    (
+        "sources/watchlist",
+        "watchlist links usually belong in sources/key-links.md unless the folder has enough durable material",
+    ),
+]
+ALLOWED_ROOT_DIRS = set(REQUIRED_DIRS) | {INBOX_DIR_NAME, OVERVIEWS_DIR_NAME, TMP_DIR_NAME}
+KNOWN_ROOT_DIRS = ALLOWED_ROOT_DIRS | set(LEGACY_DIRS)
 
 
 def project_facets(root: Path) -> dict[str, str | bool]:
@@ -81,6 +104,98 @@ def finding(level: str, message: str, path: Path | None = None) -> dict[str, str
     return item
 
 
+def tmp_status(root: Path) -> dict[str, object]:
+    path = root / TMP_DIR_NAME
+    exists = path.exists()
+    is_dir = path.is_dir()
+    item_count = 0
+    sample_items: list[str] = []
+    if is_dir:
+        items = sorted(path.iterdir(), key=lambda item: item.name)
+        item_count = len(items)
+        sample_items = [item.name for item in items[:10]]
+    return {
+        "exists": exists,
+        "is_dir": is_dir,
+        "item_count": item_count,
+        "sample_items": sample_items,
+    }
+
+
+def folder_status(root: Path, name: str) -> dict[str, object]:
+    path = root / name
+    exists = path.exists()
+    is_dir = path.is_dir()
+    item_count = 0
+    sample_items: list[str] = []
+    if is_dir:
+        items = sorted(path.iterdir(), key=lambda item: item.name)
+        item_count = len(items)
+        sample_items = [item.name for item in items[:10]]
+    return {
+        "exists": exists,
+        "is_dir": is_dir,
+        "item_count": item_count,
+        "sample_items": sample_items,
+    }
+
+
+def folder_readmes(root: Path) -> list[str]:
+    root_readme = (root / "README.md").resolve()
+    readmes: list[str] = []
+    for path in sorted(root.rglob("README.md")):
+        if path.resolve() == root_readme:
+            continue
+        readmes.append(str(path))
+    return readmes
+
+
+def markdown_files(root: Path) -> list[Path]:
+    files: list[Path] = []
+    for path in sorted(root.rglob("*.md")):
+        relative = path.relative_to(root)
+        if any(part.startswith(".") for part in relative.parts):
+            continue
+        files.append(path)
+    return files
+
+
+def facet_overview_files(root: Path) -> list[str]:
+    files: list[str] = []
+    for path in markdown_files(root):
+        relative = path.relative_to(root)
+        parts = [part.lower() for part in relative.parts]
+        if "facet" not in path.stem.lower():
+            continue
+        if "identity" in parts or any("overview" in part for part in parts):
+            files.append(str(path))
+    return files
+
+
+def misplaced_overview_paths(root: Path) -> list[str]:
+    paths: list[str] = []
+    for name in [OVERVIEWS_DIR_NAME, "overview"]:
+        path = root / "identity" / name
+        if path.exists():
+            paths.append(str(path))
+    return paths
+
+
+def unknown_root_dirs(root: Path) -> list[str]:
+    if not root.is_dir():
+        return []
+    dirs: list[str] = []
+    for path in sorted(root.iterdir(), key=lambda item: item.name):
+        if not path.is_dir():
+            continue
+        if path.name.startswith("."):
+            continue
+        if path.name in KNOWN_ROOT_DIRS:
+            continue
+        dirs.append(str(path))
+    return dirs
+
+
 def inspect_workspace(root: Path) -> dict[str, object]:
     root = root.resolve()
     return {
@@ -94,12 +209,19 @@ def inspect_workspace(root: Path) -> dict[str, object]:
         "legacy_dirs": {
             old: (root / old).is_dir() for old in LEGACY_DIRS
         },
+        "facet_overview_files": facet_overview_files(root),
+        "folder_readmes": folder_readmes(root),
+        "inbox": folder_status(root, INBOX_DIR_NAME),
+        "has_overviews": (root / OVERVIEWS_DIR_NAME).is_dir(),
+        "misplaced_overviews": misplaced_overview_paths(root),
+        "tmp": tmp_status(root),
+        "unknown_root_dirs": unknown_root_dirs(root),
         "has_readme": (root / "README.md").is_file(),
         "has_agents": (root / "AGENTS.md").is_file(),
     }
 
 
-def lint_workspace(root: Path) -> list[dict[str, str]]:
+def lint_workspace(root: Path, clean_tmp: bool = False) -> list[dict[str, str]]:
     root = root.resolve()
     findings: list[dict[str, str]] = []
 
@@ -126,6 +248,86 @@ def lint_workspace(root: Path) -> list[dict[str, str]]:
     if not (root / "AGENTS.md").is_file():
         findings.append(finding("warning", "missing agent-facing AGENTS.md", root / "AGENTS.md"))
 
+    for readme in folder_readmes(root):
+        findings.append(
+            finding(
+                "warning",
+                "folder-level README should be moved into root README.md or AGENTS.md",
+                Path(readme),
+            )
+        )
+
+    for overview in facet_overview_files(root):
+        findings.append(
+            finding(
+                "warning",
+                "facet map should live in AGENTS.md, not an identity or overview document",
+                Path(overview),
+            )
+        )
+
+    for overview_path in misplaced_overview_paths(root):
+        findings.append(
+            finding(
+                "warning",
+                "move identity overview folder to root-level overviews/",
+                Path(overview_path),
+            )
+        )
+
+    for relative, replacement in GENERIC_SHELVES:
+        path = root / relative
+        if path.exists():
+            findings.append(
+                finding(
+                    "warning",
+                    f"generic catch-all shelf should be triaged into {replacement}",
+                    path,
+                )
+            )
+
+    for relative, guidance in LOW_VALUE_SOURCE_FOLDERS:
+        path = root / relative
+        if path.is_dir():
+            findings.append(finding("warning", guidance, path))
+
+    for path in unknown_root_dirs(root):
+        findings.append(
+            finding(
+                "warning",
+                "unknown root folder; triage into inbox/, sources/, playbooks/, outputs/, reviews/, or overviews/",
+                Path(path),
+            )
+        )
+
+    tmp_path = root / TMP_DIR_NAME
+    if tmp_path.exists():
+        if not tmp_path.is_dir():
+            findings.append(
+                finding("warning", "tmp exists but is not a folder; inspect before removing", tmp_path)
+            )
+        else:
+            tmp_items = sorted(tmp_path.iterdir(), key=lambda item: item.name)
+            if tmp_items:
+                findings.append(
+                    finding(
+                        "warning",
+                        f"tmp/ contains {len(tmp_items)} scratch item(s); review and delete when no longer needed",
+                        tmp_path,
+                    )
+                )
+            elif clean_tmp:
+                tmp_path.rmdir()
+                findings.append(finding("info", "removed empty tmp/ scratch folder", tmp_path))
+            else:
+                findings.append(
+                    finding(
+                        "warning",
+                        "empty tmp/ scratch folder can be removed with lint --clean-tmp",
+                        tmp_path,
+                    )
+                )
+
     facets = project_facets(root)
     if root.name.endswith(".docs"):
         if facets["code_exists"]:
@@ -133,12 +335,6 @@ def lint_workspace(root: Path) -> list[dict[str, str]]:
             if not code_agents.is_file():
                 findings.append(
                     finding("warning", ".code facet exists but is missing AGENTS.md", code_agents)
-                )
-        if facets["drive_exists"]:
-            drive_readme = Path(str(facets["drive"])) / "README.md"
-            if not drive_readme.is_file():
-                findings.append(
-                    finding("warning", ".drive facet exists but is missing README.md", drive_readme)
                 )
 
     workflows_dir = root / "playbooks" / "workflows"
@@ -174,11 +370,6 @@ def create_from_template(root: Path, section: str, name: str, template: str, for
     slug = slugify(name)
     path = root.resolve() / section / f"{slug}.md"
     text = read_template(template)
-    title = name.strip() or slug.replace("-", " ").title()
-    text = text.replace("Workflow Name", title)
-    text = text.replace("Method Name", title)
-    text = text.replace("Review Name", title)
-    text = text.replace("Agent Persona", title)
     write_file(path, text, force)
     return path
 
@@ -201,10 +392,18 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
-    for command in ["inspect", "lint"]:
-        child = sub.add_parser(command)
-        child.add_argument("path")
-        child.add_argument("--json", action="store_true")
+    inspect = sub.add_parser("inspect")
+    inspect.add_argument("path")
+    inspect.add_argument("--json", action="store_true")
+
+    lint = sub.add_parser("lint")
+    lint.add_argument("path")
+    lint.add_argument("--json", action="store_true")
+    lint.add_argument(
+        "--clean-tmp",
+        action="store_true",
+        help="remove an empty top-level tmp/ scratch folder before reporting",
+    )
 
     create_commands = {
         "create-workflow": ("playbooks/workflows", "workflow.md"),
@@ -226,7 +425,7 @@ def main(argv: list[str]) -> int:
         print_result(inspect_workspace(root), args.json)
         return 0
     if args.command == "lint":
-        findings = lint_workspace(root)
+        findings = lint_workspace(root, clean_tmp=args.clean_tmp)
         print_result(findings, args.json)
         return 1 if any(item["level"] == "error" for item in findings) else 0
 

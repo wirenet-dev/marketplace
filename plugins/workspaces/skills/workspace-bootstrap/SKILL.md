@@ -16,6 +16,7 @@ changes.
 2. Create the smallest useful structure:
    - `README.md`
    - `AGENTS.md`
+   - optional `inbox/` only when a single catch-all is useful
    - `identity/context.md`
    - `identity/preferences.md`
    - `identity/rules.md`
@@ -26,12 +27,19 @@ changes.
 3. Avoid empty scaffolding unless the user wants a reusable template.
 4. If the project needs an Obsidian-compatible docs facet, use `project.docs/`
    as the workspace folder.
-5. If a `.code` facet exists or is clearly useful, document it in `AGENTS.md`.
-6. If deterministic workflow steps are needed, prefer named CLI tools in
+5. Keep README and `AGENTS.md` local. Do not copy generic plugin conventions,
+   folder role explanations, workflow templates, method templates, or review
+   templates into them.
+6. Add the default write boundary to `AGENTS.md`: the agent may read across the
+   system for relevant context, but may write or edit only inside the workspace
+   unless the user explicitly says otherwise.
+7. If a `.code` or `.drive` facet exists or is clearly useful, document the
+   facet split, sibling paths, and source-of-truth rules in `AGENTS.md`.
+8. If deterministic workflow steps are needed, prefer named CLI tools in
    `project.code/` and reference them from `playbooks/workflows/`.
-7. If shareable Google Drive artifacts are needed, use `project.drive/` for
+9. If shareable Google Drive artifacts are needed, use `project.drive/` for
    Docs, Slides, Sheets, PDFs, exports, and handoff artifacts.
-8. Do not overwrite user material without explicit approval.
+10. Do not overwrite user material without explicit approval.
 
 ## Validation
 

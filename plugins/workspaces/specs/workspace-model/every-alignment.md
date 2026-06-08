@@ -17,9 +17,11 @@ WireNet extensions are allowed when they keep recurring work easier to run and
 make the boundary between human context, machine tooling, and shareable
 artifacts clearer:
 
+- root-level `inbox/` as the single temporary catch-all for untriaged mixed
+  material.
+- root-level `overviews/` for Obsidian Bases and scan views.
 - `playbooks/methods/` for reusable methods.
 - `playbooks/agents/` for optional human-readable agent personas.
-- overview tables for scan surfaces.
 - `.code` facets for scripts, validation, rendering, structured state, tests,
   and deterministic CLI tools.
 - `.drive` facets for shareable Docs, Slides, Sheets, PDFs, exports, and

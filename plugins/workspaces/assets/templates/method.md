@@ -1,5 +1,3 @@
-# Method Name
-
 Purpose:
 
 Use this when:
@@ -11,4 +9,3 @@ Procedure:
 Output:
 
 Checks:
-

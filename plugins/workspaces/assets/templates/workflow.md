@@ -1,5 +1,3 @@
-# Workflow Name
-
 Purpose:
 
 Trigger or cadence:
@@ -27,4 +25,3 @@ Review checklist:
 Where the final output lives:
 
 When to retire or revise this workflow:
-

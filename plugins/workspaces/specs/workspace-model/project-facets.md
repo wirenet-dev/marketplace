@@ -25,6 +25,10 @@ human-agent source of truth for:
 Use this facet for standing context, workflow instructions, source shelves,
 draft records, and review guardrails.
 
+Document the docs/code/drive split, sibling facet paths, source-of-truth
+boundaries, and read/write boundaries in `AGENTS.md`. If a workflow may write
+to a paired facet, say so explicitly.
+
 ## project.code/
 
 The `.code` facet is the deterministic tooling surface. Use it for:
@@ -54,4 +58,3 @@ Drive-oriented outputs:
 
 The `.drive` facet is for collaboration and sharing. It should not replace the
 durable workspace source of truth in `.docs`.
-
