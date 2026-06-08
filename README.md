@@ -14,12 +14,6 @@ marketplace root, so it can be installed directly from GitHub.
     marketplace.json
 plugins/
   workspaces/
-specs/
-  workspace-model/
-fixtures/
-  empty-workspace/
-  valid-workspace/
-  broken-workspace/
 tools/
 ```
 
@@ -41,28 +35,11 @@ The first plugin is `workspaces`, which gives Codex modular capabilities for
 setting up, auditing, linting, extending, and working in WireNet-style knowledge
 workspaces.
 
-## Shared Model
+The Workspaces plugin owns its own doctrine, fixtures, skills, scripts, and
+assets under:
 
-The cross-agent workspace doctrine lives in `specs/workspace-model/`. Platform
-plugins should adapt that model to each agent surface instead of redefining it
-inside every marketplace.
-
-The project facet model is:
-
-```text
-project.docs/    Obsidian-compatible Markdown workspace
-project.code/    deterministic CLI tools and machine-side automation
-project.drive/   shareable artifacts for Google Drive-style collaboration
 ```
-
-Inside `project.docs/`, the baseline folder model is:
-
-```text
-identity/    context, preferences, and rules
-playbooks/   workflows, methods, and optional agent personas
-sources/     source shelf and recurring reading lists
-outputs/     drafts, reports, finished work, and preserved artifacts
-reviews/     quality checks and guardrails
+plugins/workspaces/
 ```
 
 ## Development
